@@ -392,13 +392,13 @@
 </div>
 
 <script>
-  const API_BASE = 'https://YOUR-BACKEND-NAME.up.railway.app/api';
+  const API_BASE = '/api';
   const token = localStorage.getItem('cc_token');
   const userEmail = localStorage.getItem('cc_email');
   const userName = localStorage.getItem('cc_fullname') || userEmail;
 
   if(!token){
-    window.location.href = 'careercompass-login.html';
+    window.location.href = 'index.html';
   }
 
   document.getElementById('user-email').textContent = userName || 'User';
@@ -409,7 +409,7 @@
     localStorage.removeItem('cc_token');
     localStorage.removeItem('cc_email');
     localStorage.removeItem('cc_fullname');
-    window.location.href = 'careercompass-login.html';
+    window.location.href = 'index.html';
   }
 
   function authHeaders(json){
