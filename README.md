@@ -256,20 +256,24 @@ Deployment includes:
 ## Screenshots
 
 ### Login
+
 ![Login](Screenshots/login.png)
 
 ### Dashboard
+
 ![Dashboard](Screenshots/dashboard.png)
 
 ### Opportunity Tracker
-![Opportunity](Screenshots/opportunity.png)
+
+![Opportunity Tracker](Screenshots/opportunity.png)
 
 ### Resume Vault
+
 ![Resume Vault](Screenshots/resumevault.png)
 
 ### About
-![About](Screenshots/about.png)
 
+![About](Screenshots/about.png)
 # What I Learned
 
 Developing CareerCompass helped me strengthen my understanding of:
