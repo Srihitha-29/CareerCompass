@@ -52,6 +52,7 @@ public class OpportunityServiceImpl implements OpportunityService {
         response.setAppliedDate(opportunity.getAppliedDate());
         response.setDeadline(opportunity.getDeadline());
         response.setResumeName(opportunity.getResumeName());
+        response.setLink(opportunity.getLink());
         return response;
     }
 
@@ -70,6 +71,7 @@ public class OpportunityServiceImpl implements OpportunityService {
         opportunity.setAppliedDate(request.getAppliedDate());
         opportunity.setDeadline(request.getDeadline());
         opportunity.setResumeName(request.getResumeName());
+        opportunity.setLink(request.getLink());
         opportunity.setUser(user);
 
         Opportunity savedOpportunity = opportunityRepository.save(opportunity);
@@ -127,6 +129,7 @@ public class OpportunityServiceImpl implements OpportunityService {
         opportunity.setAppliedDate(request.getAppliedDate());
         opportunity.setDeadline(request.getDeadline());
         opportunity.setResumeName(request.getResumeName());
+        opportunity.setLink(request.getLink());
 
         Opportunity updatedOpportunity = opportunityRepository.save(opportunity);
         return mapToResponse(updatedOpportunity);

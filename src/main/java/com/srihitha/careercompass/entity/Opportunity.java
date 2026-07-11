@@ -1,4 +1,5 @@
 package com.srihitha.careercompass.entity;
+
 import java.time.LocalDate;
 import lombok.Data;
 import com.srihitha.careercompass.enums.Category;
@@ -28,13 +29,11 @@ public class Opportunity {
     private String organization;
 
     @Enumerated(EnumType.STRING)
-private Category category;
+    private Category category;
 
-@Enumerated(EnumType.STRING)
-private Status status;
-   
-   
-   
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private String notes;
 
     private LocalDate appliedDate;
@@ -42,6 +41,8 @@ private Status status;
     private LocalDate deadline;
 
     private String resumeName;
+
+    private String link;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

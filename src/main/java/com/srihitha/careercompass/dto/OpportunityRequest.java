@@ -11,11 +11,11 @@ import lombok.Data;
 @Data
 public class OpportunityRequest {
 
-   @NotBlank(message = "Title is required")
-private String title;
+    @NotBlank(message = "Title is required")
+    private String title;
 
-@NotBlank(message = "Organization is required")
-private String organization;
+    @NotBlank(message = "Organization is required")
+    private String organization;
 
     private Category category;
 
@@ -28,4 +28,6 @@ private String organization;
     private LocalDate deadline;
 
     private String resumeName;
+
+    private String link;
 }

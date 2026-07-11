@@ -237,6 +237,7 @@
     <div class="navitem active" data-view="dashboard"><span class="dot"></span>Dashboard</div>
     <div class="navitem" data-view="opportunities"><span class="dot"></span>Opportunities</div>
     <div class="navitem" data-view="resumes"><span class="dot"></span>Resume Vault</div>
+    <div class="navitem" data-view="about"><span class="dot"></span>About</div>
   </nav>
   <div class="sidebar-foot">
     <div class="user-chip">
@@ -320,6 +321,31 @@
     </div>
   </section>
 
+  <section class="view" id="view-about">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">About</div>
+        <h1>Hey, welcome to CareerCompass 👋</h1>
+        <p>A little bit about why this exists.</p>
+      </div>
+    </div>
+
+    <div class="route" style="max-width:640px;">
+      <p style="font-size:14px; line-height:1.7; color:var(--paper);">
+        Placement season gets messy fast — internships, hackathons, placement drives, deadlines, and a dozen versions of your resume, all scattered across spreadsheets and chat threads. <b>CareerCompass</b> is a small, personal tool built to fix exactly that.
+      </p>
+      <p style="font-size:14px; line-height:1.7; color:var(--paper); margin-top:14px;">
+        Log every opportunity you apply to, track its status from planned to selected or rejected, keep an eye on upcoming deadlines before they sneak up on you, and save links to your different resume versions so you always send the right one.
+      </p>
+      <p style="font-size:14px; line-height:1.7; color:var(--paper); margin-top:14px;">
+        It's built with a Spring Boot + MySQL backend and a lightweight vanilla JS frontend — no unnecessary complexity, just something that actually helps track a busy placement season, one opportunity at a time.
+      </p>
+      <p style="font-size:13px; color:var(--muted); margin-top:22px; border-top:1px solid var(--line); padding-top:16px;">
+        Built by Srihitha · <a href="https://github.com/Srihitha-29" target="_blank" rel="noopener" style="color:var(--brass); text-decoration:none;">GitHub</a> · <a href="https://linkedin.com/in/srihitha-savarapu" target="_blank" rel="noopener" style="color:var(--brass); text-decoration:none;">LinkedIn</a>
+      </p>
+    </div>
+  </section>
+
 </main>
 
 <div class="overlay" id="overlay">
@@ -353,6 +379,7 @@
       </select>
     </div>
     <div class="field"><label>Resume used (optional)</label><input id="f-resume" placeholder="e.g. Java Backend Resume v3"></div>
+    <div class="field"><label>Site link (optional)</label><input id="f-link" placeholder="Paste the job/hackathon posting link"></div>
     <div class="field"><label>Applied date</label><input id="f-applied" type="date"></div>
     <div class="field"><label>Deadline</label><input id="f-date" type="date"></div>
     <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Revise trees before OA..."></textarea></div>
@@ -541,6 +568,7 @@
         </div>
         <div class="status-pill status-${o.status}">${titleCase(o.status)}</div>
         <div class="wp-sub" style="margin-top:-2px;">${o.notes || 'No notes yet.'}</div>
+        ${o.link ? `<a href="${o.link}" target="_blank" rel="noopener" style="font-size:12px; color:var(--brass); text-decoration:none; word-break:break-all;">↗ Visit posting</a>` : ''}
         <div class="opp-meta">
           <span>Resume: <span class="resume-tag">${o.resumeName || '—'}</span></span>
           <span class="${w.cls}">${fmtDate(o.deadline)} · ${w.label}</span>
@@ -556,7 +584,7 @@
   function openModal(){
     document.getElementById('modal-title').textContent = 'Add Opportunity';
     document.getElementById('f-id').value = '';
-    ['f-title','f-org','f-resume','f-applied','f-date','f-notes'].forEach(id=>document.getElementById(id).value='');
+    ['f-title','f-org','f-resume','f-link','f-applied','f-date','f-notes'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('f-cat').value = 'INTERNSHIP';
     document.getElementById('f-status').value = 'PLANNED';
     hideModalError();
@@ -572,6 +600,7 @@
     document.getElementById('f-cat').value = o.category || 'INTERNSHIP';
     document.getElementById('f-status').value = o.status || 'PLANNED';
     document.getElementById('f-resume').value = o.resumeName || '';
+  document.getElementById('f-link').value = o.link || '';
     document.getElementById('f-applied').value = o.appliedDate || '';
     document.getElementById('f-date').value = o.deadline || '';
     document.getElementById('f-notes').value = o.notes || '';
@@ -599,6 +628,7 @@
       category: document.getElementById('f-cat').value,
       status: document.getElementById('f-status').value,
       resumeName: document.getElementById('f-resume').value.trim(),
+    link: document.getElementById('f-link').value.trim(),
       appliedDate: document.getElementById('f-applied').value || null,
       deadline: document.getElementById('f-date').value || null,
       notes: document.getElementById('f-notes').value.trim(),

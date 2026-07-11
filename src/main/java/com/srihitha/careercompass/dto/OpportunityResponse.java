@@ -27,4 +27,6 @@ public class OpportunityResponse {
     private LocalDate deadline;
 
     private String resumeName;
+
+    private String link;
 }
