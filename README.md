@@ -253,16 +253,22 @@ Deployment includes:
 
 ---
 
-# Screenshots
+## Screenshots
 
-> Add screenshots of:
+### Login
+![Login](Screenshots/login.png)
 
-- Login Page
-- Dashboard
-- Opportunity Tracker
-- Resume Vault
+### Dashboard
+![Dashboard](Screenshots/dashboard.png)
 
----
+### Opportunity Tracker
+![Opportunity](Screenshots/opportunity.png)
+
+### Resume Vault
+![Resume Vault](Screenshots/resumevault.png)
+
+### About
+![About](Screenshots/about.png)
 
 # What I Learned
 
