@@ -1,0 +1,7 @@
+$kind: collection
+name: CareerCompass API
+variables:
+  - key: userId
+    value: ''
+  - key: token
+    value: ''

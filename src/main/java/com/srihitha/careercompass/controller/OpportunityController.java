@@ -21,54 +21,32 @@ public class OpportunityController {
         this.opportunityService = opportunityService;
     }
 
-    // ================= CREATE =================
     @PostMapping
     public ResponseEntity<OpportunityResponse> createOpportunity(
-            @Valid @RequestBody OpportunityRequest request,
-            @RequestHeader("Authorization") String token) {
-
-        return ResponseEntity.ok(
-                opportunityService.createOpportunity(request, token));
+            @Valid @RequestBody OpportunityRequest request) {
+        return ResponseEntity.ok(opportunityService.createOpportunity(request));
     }
 
-    // ================= GET ALL =================
     @GetMapping
-    public ResponseEntity<List<OpportunityResponse>> getMyOpportunities(
-            @RequestHeader("Authorization") String token) {
-
-        return ResponseEntity.ok(
-                opportunityService.getMyOpportunities(token));
+    public ResponseEntity<List<OpportunityResponse>> getMyOpportunities() {
+        return ResponseEntity.ok(opportunityService.getMyOpportunities());
     }
 
-    // ================= GET BY ID =================
     @GetMapping("/{id}")
-    public ResponseEntity<OpportunityResponse> getOpportunityById(
-            @PathVariable Long id,
-            @RequestHeader("Authorization") String token) {
-
-        return ResponseEntity.ok(
-                opportunityService.getOpportunityById(id, token));
+    public ResponseEntity<OpportunityResponse> getOpportunityById(@PathVariable Long id) {
+        return ResponseEntity.ok(opportunityService.getOpportunityById(id));
     }
 
-    // ================= UPDATE =================
     @PutMapping("/{id}")
     public ResponseEntity<OpportunityResponse> updateOpportunity(
             @PathVariable Long id,
-            @Valid @RequestBody OpportunityRequest request,
-            @RequestHeader("Authorization") String token) {
-
-        return ResponseEntity.ok(
-                opportunityService.updateOpportunity(id, request, token));
+            @Valid @RequestBody OpportunityRequest request) {
+        return ResponseEntity.ok(opportunityService.updateOpportunity(id, request));
     }
 
-    // ================= DELETE =================
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOpportunity(
-            @PathVariable Long id,
-            @RequestHeader("Authorization") String token) {
-
-        opportunityService.deleteOpportunity(id, token);
-
+    public ResponseEntity<String> deleteOpportunity(@PathVariable Long id) {
+        opportunityService.deleteOpportunity(id);
         return ResponseEntity.ok("Opportunity Deleted Successfully");
     }
 }

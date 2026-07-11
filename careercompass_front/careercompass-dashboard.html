@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerCompass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F5F3EC;
+    --ink-2:#FFFFFF;
+    --ink-3:#EFEDE4;
+    --paper:#0F1A33;
+    --paper-dim:#5B6B85;
+    --brass:#16223E;
+    --coral:#B23A33;
+    --sage:#2F6B44;
+    --muted:#4B5568;
+    --line: rgba(15,26,51,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Sans', sans-serif;
+    display:flex;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em; }
+  h1,h2,h3,.display{ font-family:'Fraunces', serif; font-weight:600; }
+
+  .sidebar{
+    width:230px;
+    flex-shrink:0;
+    background:var(--ink-2);
+    border-right:1px solid var(--line);
+    padding:28px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:36px;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand svg{ width:30px; height:30px; }
+  .brand .name{ font-family:'Fraunces', serif; font-size:19px; font-weight:600; line-height:1.1;}
+  .brand .name span{ color:var(--brass); }
+  nav{ display:flex; flex-direction:column; gap:4px; }
+  .navitem{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; border-radius:8px;
+    color:var(--muted); font-size:14px; font-weight:500;
+    cursor:pointer; transition:background .15s, color .15s;
+    border-left:2px solid transparent;
+  }
+  .navitem:hover{ color:var(--paper); background:rgba(236,230,214,0.05); }
+  .navitem.active{ color:var(--paper); background:rgba(201,162,39,0.1); border-left:2px solid var(--brass); }
+  .navitem .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; opacity:.5; flex-shrink:0; }
+  .sidebar-foot{ margin-top:auto; display:flex; flex-direction:column; gap:8px; }
+  .user-chip{
+    display:flex; align-items:center; gap:10px;
+    padding:10px; border-radius:10px; background:var(--ink-3);
+  }
+  .avatar{
+    width:32px;height:32px;border-radius:50%;
+    background:linear-gradient(135deg,var(--brass),var(--sage));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:13px; color:var(--ink);
+  }
+  .user-chip .uname{ font-size:13px; font-weight:600; word-break:break-all; }
+  .user-chip .urole{ font-size:11px; color:var(--muted); }
+  .signout{
+    font-size:12px; color:var(--muted); cursor:pointer; text-align:center; padding:6px;
+    border-radius:8px; border:1px solid var(--line);
+  }
+  .signout:hover{ color:var(--coral); border-color:rgba(193,68,60,0.3); }
+
+  main{ flex:1; padding:36px 44px; max-width:1180px; }
+  .view{ display:none; animation:fade .25s ease; }
+  .view.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .page-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; gap:20px; flex-wrap:wrap;}
+  .eyebrow{ font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:var(--brass); margin-bottom:6px; }
+  .page-head h1{ font-size:30px; }
+  .page-head p{ color:var(--muted); font-size:14px; margin-top:6px; max-width:440px; }
+
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:13px;
+    padding:10px 18px; border-radius:8px; border:none; cursor:pointer;
+    transition:transform .12s, opacity .12s; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .btn-brass{ background:var(--brass); color:var(--ink); }
+  .btn-brass:hover{ opacity:0.9; }
+  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--paper); }
+  .btn-ghost:hover{ background:rgba(236,230,214,0.06); }
+  .btn-coral{ background:transparent; border:1px solid rgba(193,68,60,0.4); color:var(--coral); }
+  .btn-coral:hover{ background:rgba(193,68,60,0.1); }
+
+  .stat-row{ display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-bottom:34px; }
+  .stat-card{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:12px;
+    padding:18px 16px;
+  }
+  .stat-card .num{ font-family:'Fraunces',serif; font-size:28px; font-weight:600; }
+  .stat-card .lbl{ font-size:11px; color:var(--muted); margin-top:4px; }
+  .stat-card.brass{ border-color:rgba(201,162,39,0.4); }
+  .stat-card.brass .num{ color:var(--brass); }
+  .stat-card.sage .num{ color:var(--sage); }
+  .stat-card.coral .num{ color:var(--coral); }
+
+  .section-title{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .section-title h2{ font-size:17px; }
+  .section-title .see-all{ font-size:12px; color:var(--muted); cursor:pointer; }
+
+  .grid-2{ display:grid; grid-template-columns:1.5fr 1fr; gap:22px; align-items:start; }
+
+  .route{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:22px 24px;
+    position:relative;
+  }
+  .route-line{ position:relative; padding-left:26px; }
+  .route-line::before{
+    content:''; position:absolute; left:6px; top:6px; bottom:6px; width:1px;
+    background:repeating-linear-gradient(to bottom, var(--paper-dim) 0 4px, transparent 4px 9px);
+  }
+  .waypoint{ position:relative; padding-bottom:22px; }
+  .waypoint:last-child{ padding-bottom:0; }
+  .waypoint::before{
+    content:''; position:absolute; left:-26px; top:2px; width:11px; height:11px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--sage);
+  }
+  .waypoint.urgent::before{ border-color:var(--coral); }
+  .waypoint.soon::before{ border-color:var(--brass); }
+  .wp-top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+  .wp-title{ font-weight:600; font-size:14px; }
+  .wp-when{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+  .wp-when.urgent{ color:var(--coral); }
+  .wp-when.soon{ color:var(--brass); }
+  .wp-sub{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+  .qa-list{ display:flex; flex-direction:column; gap:10px; }
+  .qa{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;
+    transition:border-color .15s;
+  }
+  .qa:hover{ border-color:var(--brass); }
+  .qa .ic{ width:34px; height:34px; border-radius:8px; background:var(--ink-3); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .qa .qt{ font-size:13px; font-weight:600; }
+  .qa .qs{ font-size:11px; color:var(--muted); }
+
+  .filters{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+  .chip{
+    font-size:12px; padding:7px 13px; border-radius:20px; border:1px solid var(--line);
+    color:var(--muted); cursor:pointer; user-select:none; transition:all .15s;
+  }
+  .chip.active{ background:var(--brass); color:var(--ink); border-color:var(--brass); font-weight:600; }
+  .opp-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+  .opp-card{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:18px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .opp-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .opp-title{ font-family:'Fraunces',serif; font-weight:600; font-size:16px; }
+  .opp-org{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .cat-tag{ font-size:10px; text-transform:uppercase; letter-spacing:0.06em; background:var(--ink-3); color:var(--sage); padding:4px 8px; border-radius:6px; white-space:nowrap;}
+  .status-pill{ font-size:11px; font-weight:600; padding:5px 11px; border-radius:20px; width:fit-content; }
+  .status-APPLIED{ background:rgba(201,162,39,0.15); color:var(--brass); }
+  .status-INTERVIEW{ background:rgba(122,158,126,0.18); color:var(--sage); }
+  .status-SHORTLISTED{ background:rgba(122,158,126,0.18); color:var(--sage); }
+  .status-PLANNED{ background:rgba(143,166,163,0.15); color:var(--muted); }
+  .status-REGISTERED{ background:rgba(143,166,163,0.15); color:var(--muted); }
+  .status-ONLINE_ASSESSMENT{ background:rgba(143,166,163,0.15); color:var(--muted); }
+  .status-SELECTED{ background:rgba(122,158,126,0.28); color:#B9E3BE; }
+  .status-REJECTED{ background:rgba(193,68,60,0.16); color:var(--coral); }
+  .opp-meta{ font-size:12px; color:var(--muted); display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:10px; margin-top:2px;}
+  .opp-meta .resume-tag{ color:var(--paper); }
+  .opp-actions{ display:flex; gap:8px; margin-top:2px; }
+  .opp-actions .btn{ flex:1; padding:8px; font-size:12px; justify-content:center; }
+
+  .empty-state{ color:var(--muted); font-size:13px; padding:20px; text-align:center; }
+
+  .overlay{ position:fixed; inset:0; background:rgba(9,17,19,0.65); display:none; align-items:center; justify-content:center; z-index:50; }
+  .overlay.active{ display:flex; }
+  .modal{ background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:28px; width:440px; max-width:92vw; max-height:86vh; overflow-y:auto;}
+  .modal h3{ font-size:18px; margin-bottom:18px; }
+  .field{ margin-bottom:16px; }
+  .field label{ font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); display:block; margin-bottom:6px;}
+  .modal .field input, .modal .field select, .modal .field textarea{
+    width:100%; padding:10px 12px; background:var(--ink-3); border:1px solid var(--line); border-radius:8px;
+    color:var(--paper); font-family:'IBM Plex Sans',sans-serif; font-size:13px;
+  }
+  .modal .field textarea{ resize:vertical; min-height:60px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+  .modal .err-msg{ font-size:12px; color:var(--coral); margin-bottom:14px; display:none; }
+  .modal .err-msg.show{ display:block; }
+
+  .modal.confirm-modal{ width:360px; }
+  .confirm-icon{
+    width:44px; height:44px; border-radius:12px; background:rgba(193,68,60,0.14);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .confirm-modal p{ font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:22px; }
+
+  ::selection{ background:var(--brass); color:var(--ink); }
+
+  @media (max-width:880px){
+    body{ flex-direction:column; }
+    .sidebar{ width:100%; height:auto; position:relative; flex-direction:row; align-items:center; padding:16px 18px; }
+    nav{ flex-direction:row; overflow-x:auto; }
+    .sidebar-foot{ display:none; }
+    main{ padding:24px 18px; }
+    .stat-row{ grid-template-columns:repeat(2,1fr); }
+    .grid-2{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand">
+    <svg viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="#C9A227" stroke-width="1.4"/>
+      <circle cx="20" cy="20" r="1.6" fill="#C9A227"/>
+      <path d="M20 6 L23 18 L20 20 L17 18 Z" fill="#C9A227"/>
+      <path d="M20 34 L17 22 L20 20 L23 22 Z" fill="#7A9E7E" opacity="0.7"/>
+    </svg>
+    <div class="name">Career<span>Compass</span></div>
+  </div>
+  <nav id="nav">
+    <div class="navitem active" data-view="dashboard"><span class="dot"></span>Dashboard</div>
+    <div class="navitem" data-view="opportunities"><span class="dot"></span>Opportunities</div>
+    <div class="navitem" data-view="resumes"><span class="dot"></span>Resume Vault</div>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="user-chip">
+      <div class="avatar" id="avatar-initials">--</div>
+      <div>
+        <div class="uname" id="user-email">—</div>
+        <div class="urole">Signed in</div>
+      </div>
+    </div>
+    <div class="signout" onclick="signOut()">Sign out</div>
+  </div>
+</div>
+
+<main>
+
+  <section class="view active" id="view-dashboard">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Overview</div>
+        <h1 id="greeting">Your dashboard</h1>
+        <p>A live snapshot of every opportunity you're tracking.</p>
+      </div>
+      <button class="btn btn-brass" onclick="openModal()">+ Add Opportunity</button>
+    </div>
+
+    <div class="stat-row" id="stat-row">
+      <div class="empty-state">Loading...</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="route">
+        <div class="section-title"><h2>Upcoming Deadlines</h2><span class="see-all" onclick="switchView('opportunities')">View all →</span></div>
+        <div class="route-line" id="route-line"></div>
+      </div>
+      <div>
+        <div class="section-title"><h2>Quick Actions</h2></div>
+        <div class="qa-list">
+          <div class="qa" onclick="openModal()">
+            <div class="ic">＋</div>
+            <div><div class="qt">Add Opportunity</div><div class="qs">Log a new placement, internship or hackathon</div></div>
+          </div>
+          <div class="qa" onclick="switchView('opportunities')">
+            <div class="ic">▤</div>
+            <div><div class="qt">View All Opportunities</div><div class="qs">Filter and manage everything you're tracking</div></div>
+          </div>
+          <div class="qa" onclick="refreshAll()">
+            <div class="ic">↻</div>
+            <div><div class="qt">Refresh Data</div><div class="qs">Pull the latest from the server</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-opportunities">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Opportunity Tracker</div>
+        <h1>Every application, one place</h1>
+        <p>Internships, placements, hackathons, certifications — filter by category.</p>
+      </div>
+      <button class="btn btn-brass" onclick="openModal()">+ Add Opportunity</button>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="opp-grid" id="opp-grid">
+      <div class="empty-state">Loading...</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-resumes">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Resume Vault</div>
+        <h1>Your saved resumes</h1>
+        <p>Keep a title and link for each version — frontend, backend, general — so you always send the right one.</p>
+      </div>
+      <button class="btn btn-brass" onclick="openResumeModal()">+ Add Resume</button>
+    </div>
+    <div class="opp-grid" id="resume-grid">
+      <div class="empty-state">Loading...</div>
+    </div>
+  </section>
+
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modal-title">Add Opportunity</h3>
+    <div class="err-msg" id="modal-err"></div>
+    <input type="hidden" id="f-id">
+    <div class="field"><label>Title</label><input id="f-title" placeholder="e.g. Google SWE Internship"></div>
+    <div class="field"><label>Organization</label><input id="f-org" placeholder="e.g. Google"></div>
+    <div class="field"><label>Category</label>
+      <select id="f-cat">
+        <option value="INTERNSHIP">Internship</option>
+        <option value="HACKATHON">Hackathon</option>
+        <option value="PLACEMENT">Placement</option>
+        <option value="CERTIFICATION">Certification</option>
+        <option value="COMPETITION">Competition</option>
+        <option value="WORKSHOP">Workshop</option>
+        <option value="OTHER">Other</option>
+      </select>
+    </div>
+    <div class="field"><label>Status</label>
+      <select id="f-status">
+        <option value="PLANNED">Planned</option>
+        <option value="REGISTERED">Registered</option>
+        <option value="APPLIED">Applied</option>
+        <option value="ONLINE_ASSESSMENT">Online Assessment</option>
+        <option value="SHORTLISTED">Shortlisted</option>
+        <option value="INTERVIEW">Interview</option>
+        <option value="SELECTED">Selected</option>
+        <option value="REJECTED">Rejected</option>
+      </select>
+    </div>
+    <div class="field"><label>Resume used (optional)</label><input id="f-resume" placeholder="e.g. Java Backend Resume v3"></div>
+    <div class="field"><label>Applied date</label><input id="f-applied" type="date"></div>
+    <div class="field"><label>Deadline</label><input id="f-date" type="date"></div>
+    <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Revise trees before OA..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-brass" id="save-btn" onclick="saveOpportunity()">Save Opportunity</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="resume-overlay">
+  <div class="modal">
+    <h3 id="resume-modal-title">Add Resume</h3>
+    <div class="err-msg" id="resume-modal-err"></div>
+    <input type="hidden" id="r-id">
+    <div class="field"><label>Title</label><input id="r-title" placeholder="e.g. Frontend Resume, Backend Resume"></div>
+    <div class="field"><label>Link</label><input id="r-link" placeholder="Paste your Drive/Docs link here"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeResumeModal()">Cancel</button>
+      <button class="btn btn-brass" id="resume-save-btn" onclick="saveResume()">Save Resume</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="confirm-overlay">
+  <div class="modal confirm-modal">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#C1443C" stroke-width="1.8" width="22" height="22"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+    </div>
+    <h3 id="confirm-title">Delete this item?</h3>
+    <p id="confirm-msg">This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancel</button>
+      <button class="btn btn-coral" id="confirm-btn" style="border-color:var(--coral); background:var(--coral); color:#fff;">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'http://localhost:8080/api';
+  const token = localStorage.getItem('cc_token');
+  const userEmail = localStorage.getItem('cc_email');
+  const userName = localStorage.getItem('cc_fullname') || userEmail;
+
+  if(!token){
+    window.location.href = 'careercompass-login.html';
+  }
+
+  document.getElementById('user-email').textContent = userName || 'User';
+  document.getElementById('avatar-initials').textContent = (userName || '??').trim().split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('greeting').textContent = 'Hi, ' + (userName ? userName.split(' ')[0] : 'there');
+
+  function signOut(){
+    localStorage.removeItem('cc_token');
+    localStorage.removeItem('cc_email');
+    localStorage.removeItem('cc_fullname');
+    window.location.href = 'careercompass-login.html';
+  }
+
+  function authHeaders(json){
+    const h = { 'Authorization': 'Bearer ' + token };
+    if(json) h['Content-Type'] = 'application/json';
+    return h;
+  }
+
+  async function apiFetch(path, options={}){
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: { ...authHeaders(!!options.body), ...(options.headers||{}) }
+    });
+    if(res.status === 401 || res.status === 403){
+      signOut();
+      throw new Error('Session expired');
+    }
+    return res;
+  }
+
+  let opportunities = [];
+  let activeFilter = "All";
+
+  document.getElementById('nav').addEventListener('click', e=>{
+    const item = e.target.closest('.navitem');
+    if(!item) return;
+    switchView(item.dataset.view);
+  });
+  function switchView(v){
+    document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active', n.dataset.view===v));
+    document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active', s.id==='view-'+v));
+  }
+
+  function daysUntil(dateStr){
+    if(!dateStr) return null;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const d = new Date(dateStr);
+    return Math.round((d-today)/(1000*60*60*24));
+  }
+  function fmtWhen(dateStr){
+    const n = daysUntil(dateStr);
+    if(n===null) return {label:"No deadline", cls:""};
+    if(n===0) return {label:"Today", cls:"urgent"};
+    if(n===1) return {label:"Tomorrow", cls:"urgent"};
+    if(n<0) return {label:"Past", cls:""};
+    if(n<=3) return {label:n+" days left", cls:"urgent"};
+    if(n<=7) return {label:n+" days left", cls:"soon"};
+    return {label:n+" days left", cls:""};
+  }
+  function fmtDate(dateStr){
+    if(!dateStr) return '—';
+    return new Date(dateStr).toLocaleDateString('en-US',{month:'short', day:'numeric'});
+  }
+  function titleCase(s){
+    if(!s) return '';
+    return s.toLowerCase().split('_').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+  }
+
+  async function loadDashboard(){
+    try{
+      const res = await apiFetch('/dashboard');
+      const d = await res.json();
+      const stats = [
+        {num:d.totalOpportunities, lbl:"Total", cls:""},
+        {num:d.applied, lbl:"Applied", cls:"brass"},
+        {num:d.pending, lbl:"Pending", cls:""},
+        {num:d.shortlisted, lbl:"Shortlisted", cls:"sage"},
+        {num:d.selected, lbl:"Selected", cls:"sage"},
+        {num:d.rejected, lbl:"Rejected", cls:"coral"},
+      ];
+      document.getElementById('stat-row').innerHTML = stats.map(s=>`
+        <div class="stat-card ${s.cls}">
+          <div class="num">${s.num}</div>
+          <div class="lbl">${s.lbl}</div>
+        </div>`).join('');
+    }catch(err){
+      document.getElementById('stat-row').innerHTML = `<div class="empty-state">Couldn't load dashboard stats.</div>`;
+    }
+  }
+
+  async function loadOpportunities(){
+    try{
+      const res = await apiFetch('/opportunities');
+      opportunities = await res.json();
+      renderRoute();
+      renderFilters();
+      renderOpps();
+    }catch(err){
+      document.getElementById('opp-grid').innerHTML = `<div class="empty-state">Couldn't load opportunities.</div>`;
+    }
+  }
+
+  function renderRoute(){
+    const upcoming = [...opportunities]
+      .filter(o=>o.deadline && daysUntil(o.deadline)>=0)
+      .sort((a,b)=>daysUntil(a.deadline)-daysUntil(b.deadline))
+      .slice(0,5);
+    document.getElementById('route-line').innerHTML = upcoming.map(o=>{
+      const w = fmtWhen(o.deadline);
+      return `<div class="waypoint ${w.cls}">
+        <div class="wp-top">
+          <div class="wp-title">${o.title}</div>
+          <div class="wp-when ${w.cls}">${w.label}</div>
+        </div>
+        <div class="wp-sub">${titleCase(o.category)} · ${o.organization}</div>
+      </div>`;
+    }).join('') || `<div class="wp-sub">No upcoming deadlines. You're all caught up.</div>`;
+  }
+
+  function renderFilters(){
+    const cats = ["All","INTERNSHIP","HACKATHON","PLACEMENT","CERTIFICATION","COMPETITION","WORKSHOP","OTHER"];
+    document.getElementById('filters').innerHTML = cats.map(c=>
+      `<div class="chip ${activeFilter===c?'active':''}" onclick="setFilter('${c}')">${c==='All'?'All':titleCase(c)}</div>`
+    ).join('');
+  }
+  function setFilter(c){ activeFilter=c; renderFilters(); renderOpps(); }
+
+  function renderOpps(){
+    const list = activeFilter==='All' ? opportunities : opportunities.filter(o=>o.category===activeFilter);
+    document.getElementById('opp-grid').innerHTML = list.map(o=>{
+      const w = fmtWhen(o.deadline);
+      return `<div class="opp-card">
+        <div class="opp-top">
+          <div>
+            <div class="opp-title">${o.title}</div>
+            <div class="opp-org">${o.organization}</div>
+          </div>
+          <div class="cat-tag">${titleCase(o.category)}</div>
+        </div>
+        <div class="status-pill status-${o.status}">${titleCase(o.status)}</div>
+        <div class="wp-sub" style="margin-top:-2px;">${o.notes || 'No notes yet.'}</div>
+        <div class="opp-meta">
+          <span>Resume: <span class="resume-tag">${o.resumeName || '—'}</span></span>
+          <span class="${w.cls}">${fmtDate(o.deadline)} · ${w.label}</span>
+        </div>
+        <div class="opp-actions">
+          <button class="btn btn-ghost" onclick="editOpportunity(${o.id})">Edit</button>
+          <button class="btn btn-coral" onclick="deleteOpportunity(${o.id})">Delete</button>
+        </div>
+      </div>`;
+    }).join('') || `<div class="empty-state">No opportunities in this category yet.</div>`;
+  }
+
+  function openModal(){
+    document.getElementById('modal-title').textContent = 'Add Opportunity';
+    document.getElementById('f-id').value = '';
+    ['f-title','f-org','f-resume','f-applied','f-date','f-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-cat').value = 'INTERNSHIP';
+    document.getElementById('f-status').value = 'PLANNED';
+    hideModalError();
+    document.getElementById('overlay').classList.add('active');
+  }
+  function editOpportunity(id){
+    const o = opportunities.find(x=>x.id===id);
+    if(!o) return;
+    document.getElementById('modal-title').textContent = 'Edit Opportunity';
+    document.getElementById('f-id').value = o.id;
+    document.getElementById('f-title').value = o.title || '';
+    document.getElementById('f-org').value = o.organization || '';
+    document.getElementById('f-cat').value = o.category || 'INTERNSHIP';
+    document.getElementById('f-status').value = o.status || 'PLANNED';
+    document.getElementById('f-resume').value = o.resumeName || '';
+    document.getElementById('f-applied').value = o.appliedDate || '';
+    document.getElementById('f-date').value = o.deadline || '';
+    document.getElementById('f-notes').value = o.notes || '';
+    hideModalError();
+    document.getElementById('overlay').classList.add('active');
+  }
+  function closeModal(){ document.getElementById('overlay').classList.remove('active'); }
+  function showModalError(msg){
+    const e = document.getElementById('modal-err');
+    e.textContent = msg; e.classList.add('show');
+  }
+  function hideModalError(){
+    document.getElementById('modal-err').classList.remove('show');
+  }
+
+  async function saveOpportunity(){
+    const title = document.getElementById('f-title').value.trim();
+    const organization = document.getElementById('f-org').value.trim();
+    if(!title || !organization){ showModalError('Title and organization are required.'); return; }
+
+    const id = document.getElementById('f-id').value;
+    const payload = {
+      title,
+      organization,
+      category: document.getElementById('f-cat').value,
+      status: document.getElementById('f-status').value,
+      resumeName: document.getElementById('f-resume').value.trim(),
+      appliedDate: document.getElementById('f-applied').value || null,
+      deadline: document.getElementById('f-date').value || null,
+      notes: document.getElementById('f-notes').value.trim(),
+    };
+
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    hideModalError();
+
+    try{
+      const res = id
+        ? await apiFetch(`/opportunities/${id}`, { method:'PUT', body: JSON.stringify(payload) })
+        : await apiFetch('/opportunities', { method:'POST', body: JSON.stringify(payload) });
+
+      if(!res.ok){
+        const contentType = res.headers.get('content-type') || '';
+        const msg = contentType.includes('application/json')
+          ? Object.values(await res.json()).join(' ')
+          : await res.text();
+        showModalError(msg || 'Could not save opportunity.');
+        return;
+      }
+
+      closeModal();
+      await refreshAll();
+    }catch(err){
+      showModalError('Could not reach the server.');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Save Opportunity';
+    }
+  }
+
+  function showConfirm(title, msg, onConfirm){
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-msg').textContent = msg;
+    document.getElementById('confirm-overlay').classList.add('active');
+    const btn = document.getElementById('confirm-btn');
+    const fresh = btn.cloneNode(true);
+    btn.parentNode.replaceChild(fresh, btn);
+    fresh.addEventListener('click', () => {
+      closeConfirmModal();
+      onConfirm();
+    });
+  }
+  function closeConfirmModal(){
+    document.getElementById('confirm-overlay').classList.remove('active');
+  }
+
+  async function deleteOpportunity(id){
+    showConfirm('Delete this opportunity?', 'This will permanently remove it from your tracker.', async () => {
+      try{
+        await apiFetch(`/opportunities/${id}`, { method:'DELETE' });
+        await refreshAll();
+      }catch(err){
+        alert('Could not delete opportunity.');
+      }
+    });
+  }
+
+  let resumes = [];
+
+  async function loadResumes(){
+    try{
+      const res = await apiFetch('/resumes');
+      resumes = await res.json();
+      renderResumes();
+    }catch(err){
+      console.error('Resume load failed:', err);
+      document.getElementById('resume-grid').innerHTML = `<div class="empty-state">Couldn't load resumes.</div>`;
+    }
+  }
+
+  function renderResumes(){
+    document.getElementById('resume-grid').innerHTML = resumes.map(r => `
+      <div class="opp-card">
+        <div class="opp-top">
+          <div>
+            <div class="opp-title">${r.title}</div>
+            <div class="opp-org">Added ${fmtDate(r.uploadedDate)}</div>
+          </div>
+        </div>
+        <div class="wp-sub" style="word-break:break-all;">
+          <a href="${r.link}" target="_blank" rel="noopener" style="color:var(--brass); text-decoration:none;">${r.link}</a>
+        </div>
+        <div class="opp-actions">
+          <button class="btn btn-ghost" onclick="editResume(${r.id})">Edit</button>
+          <button class="btn btn-coral" onclick="deleteResume(${r.id})">Delete</button>
+        </div>
+      </div>
+    `).join('') || `<div class="empty-state">No resumes saved yet. Add your first one above.</div>`;
+  }
+
+  function openResumeModal(){
+    document.getElementById('resume-modal-title').textContent = 'Add Resume';
+    document.getElementById('r-id').value = '';
+    document.getElementById('r-title').value = '';
+    document.getElementById('r-link').value = '';
+    hideResumeModalError();
+    document.getElementById('resume-overlay').classList.add('active');
+  }
+
+  function editResume(id){
+    const r = resumes.find(x=>x.id===id);
+    if(!r) return;
+    document.getElementById('resume-modal-title').textContent = 'Edit Resume';
+    document.getElementById('r-id').value = r.id;
+    document.getElementById('r-title').value = r.title || '';
+    document.getElementById('r-link').value = r.link || '';
+    hideResumeModalError();
+    document.getElementById('resume-overlay').classList.add('active');
+  }
+
+  function closeResumeModal(){ document.getElementById('resume-overlay').classList.remove('active'); }
+  function showResumeModalError(msg){
+    const e = document.getElementById('resume-modal-err');
+    e.textContent = msg; e.classList.add('show');
+  }
+  function hideResumeModalError(){
+    document.getElementById('resume-modal-err').classList.remove('show');
+  }
+
+  async function saveResume(){
+    const title = document.getElementById('r-title').value.trim();
+    const link = document.getElementById('r-link').value.trim();
+    if(!title || !link){ showResumeModalError('Title and link are required.'); return; }
+
+    const id = document.getElementById('r-id').value;
+    const payload = { title, link };
+
+    const btn = document.getElementById('resume-save-btn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    hideResumeModalError();
+
+    try{
+      const res = id
+        ? await apiFetch(`/resumes/${id}`, { method:'PUT', body: JSON.stringify(payload) })
+        : await apiFetch('/resumes', { method:'POST', body: JSON.stringify(payload) });
+
+      if(!res.ok){
+        const contentType = res.headers.get('content-type') || '';
+        const msg = contentType.includes('application/json')
+          ? Object.values(await res.json()).join(' ')
+          : await res.text();
+        showResumeModalError(msg || 'Could not save resume.');
+        return;
+      }
+
+      closeResumeModal();
+      await loadResumes();
+    }catch(err){
+      showResumeModalError('Could not reach the server.');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Save Resume';
+    }
+  }
+
+  async function deleteResume(id){
+    showConfirm('Delete this resume?', 'The saved title and link will be permanently removed.', async () => {
+      try{
+        await apiFetch(`/resumes/${id}`, { method:'DELETE' });
+        await loadResumes();
+      }catch(err){
+        alert('Could not delete resume.');
+      }
+    });
+  }
+
+  async function refreshAll(){
+    await Promise.all([loadDashboard(), loadOpportunities(), loadResumes()]);
+  }
+
+  refreshAll();
+</script>
+</body>
+</html>

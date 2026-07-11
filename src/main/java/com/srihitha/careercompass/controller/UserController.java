@@ -30,11 +30,8 @@ public String registerUser(@Valid @RequestBody RegisterRequest request) {
     return "User Registered Successfully";
 }
 @PostMapping("/login")
-public ResponseEntity<LoginResponse> login(
-        @RequestBody LoginRequest request) {
-
+public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
     LoginResponse response = userService.loginUser(request);
-
     return ResponseEntity.ok(response);
 }
 @GetMapping("/test")

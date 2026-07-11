@@ -1,0 +1,23 @@
+$kind: http-request
+name: Upload Resume
+method: POST
+url: 'http://localhost:8080/api/resumes/upload'
+order: 1000
+queryParams:
+  - key: userId
+    value: '{{userId}}'
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: formdata
+  content:
+    - key: request
+      type: text
+      value: '{"resumeName":"My Resume","targetRole":"Software Engineer","skills":"Java, Spring Boot"}'
+      contentType: application/json
+    - key: file
+      type: file
+      src: ''

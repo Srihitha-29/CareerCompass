@@ -39,19 +39,20 @@ public class UserService {
     public LoginResponse loginUser(LoginRequest request) {
         Optional<User> userOptional =
                 userRepository.findByEmail(request.getEmail());
-        // Check email exists
+
         if(userOptional.isEmpty()) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
-        // Convert Optional<User> into User object
+
         User user = userOptional.get();
-        // Check password
+
         if(!passwordEncoder.matches(
-        request.getPassword(),
-        user.getPassword())) {
-    throw new InvalidCredentialsException("Invalid email or password");
-}
-       String token = jwtUtil.generateToken(user.getEmail());
-return new LoginResponse(token);
+                request.getPassword(),
+                user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        return new LoginResponse(token, user.getFullName());
     }
 }

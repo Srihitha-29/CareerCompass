@@ -1,26 +1,32 @@
 package com.srihitha.careercompass.entity;
 
-import jakarta.persistence.Column;
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "users")
+@Table(name = "resumes")
 @Data
-public class User {
+public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
+    private String title;
 
-    @Column(unique = true)
-    private String email;
+    private String link;
 
-    private String password;
+    private LocalDate uploadedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

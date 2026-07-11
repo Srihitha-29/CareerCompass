@@ -7,31 +7,13 @@ import com.srihitha.careercompass.dto.OpportunityResponse;
 
 public interface OpportunityService {
 
-    // Create Opportunity
-    OpportunityResponse createOpportunity(
-            OpportunityRequest request,
-            String token
-    );
+    OpportunityResponse createOpportunity(OpportunityRequest request);
 
-    // Get All Opportunities of Logged-in User
-    List<OpportunityResponse> getMyOpportunities(String token);
+    List<OpportunityResponse> getMyOpportunities();
 
-    // Get Single Opportunity
-    OpportunityResponse getOpportunityById(
-            Long id,
-            String token
-    );
+    OpportunityResponse getOpportunityById(Long id);
 
-    // Update Opportunity
-    OpportunityResponse updateOpportunity(
-            Long id,
-            OpportunityRequest request,
-            String token
-    );
+    OpportunityResponse updateOpportunity(Long id, OpportunityRequest request);
 
-    // Delete Opportunity
-    void deleteOpportunity(
-            Long id,
-            String token
-    );
+    void deleteOpportunity(Long id);
 }

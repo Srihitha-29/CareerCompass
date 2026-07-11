@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerCompass — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F5F3EC;
+    --ink-2:#FFFFFF;
+    --ink-3:#EFEDE4;
+    --paper:#0F1A33;
+    --paper-dim:#5B6B85;
+    --brass:#16223E;
+    --coral:#B23A33;
+    --sage:#2F6B44;
+    --muted:#4B5568;
+    --line: rgba(15,26,51,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  body::before{
+    content:'';
+    position:absolute;
+    width:900px; height:900px;
+    border-radius:50%;
+    border:1px solid rgba(201,162,39,0.08);
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+  }
+  body::after{
+    content:'';
+    position:absolute;
+    width:640px; height:640px;
+    border-radius:50%;
+    border:1px solid rgba(201,162,39,0.08);
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+  }
+
+  .stage{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+    max-width:920px;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    z-index:1;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,0.5);
+  }
+
+  .brand-pane{
+    background:
+      radial-gradient(circle at 30% 20%, rgba(201,162,39,0.14), transparent 55%),
+      linear-gradient(160deg, var(--ink-3), var(--ink));
+    padding:44px 38px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-right:1px solid var(--line);
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand svg{ width:32px; height:32px; }
+  .brand .name{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; }
+  .brand .name span{ color:var(--brass); }
+
+  .brand-quote{ margin-top:40px; }
+  .brand-quote .eyebrow{ font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:var(--brass); margin-bottom:10px; }
+  .brand-quote h2{ font-family:'Fraunces', serif; font-weight:500; font-size:26px; line-height:1.3; color:var(--paper); }
+
+  .route-preview{ display:flex; flex-direction:column; gap:0; margin-top:auto; padding-top:32px; }
+  .rp-line{ position:relative; padding-left:22px; }
+  .rp-line::before{
+    content:''; position:absolute; left:5px; top:5px; bottom:5px; width:1px;
+    background:repeating-linear-gradient(to bottom, var(--paper-dim) 0 4px, transparent 4px 9px);
+  }
+  .rp-item{ position:relative; padding-bottom:18px; font-size:12px; color:var(--muted); }
+  .rp-item:last-child{ padding-bottom:0; }
+  .rp-item::before{
+    content:''; position:absolute; left:-22px; top:2px; width:9px; height:9px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--sage);
+  }
+  .rp-item.brass::before{ border-color:var(--brass); }
+  .rp-item b{ color:var(--paper); font-weight:600; }
+
+  .form-pane{ padding:44px 40px; display:flex; flex-direction:column; justify-content:center; }
+  .form-head{ margin-bottom:28px; }
+  .form-head .eyebrow{ font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:var(--brass); margin-bottom:8px; }
+  .form-head h1{ font-family:'Fraunces', serif; font-size:26px; font-weight:600; }
+  .form-head p{ font-size:13px; color:var(--muted); margin-top:6px; }
+
+  .tabs{ display:flex; gap:4px; background:var(--ink-3); border-radius:10px; padding:4px; margin-bottom:26px; }
+  .tab{ flex:1; text-align:center; padding:9px; border-radius:7px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; transition:all .15s; }
+  .tab.active{ background:var(--brass); color:var(--ink); }
+
+  .field{ margin-bottom:16px; }
+  .field label{ font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); display:block; margin-bottom:7px; }
+  .input-wrap{ position:relative; }
+  .input-wrap svg{ position:absolute; left:13px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--muted); }
+  .field input{
+    width:100%; padding:12px 14px 12px 40px; background:var(--ink-3); border:1px solid var(--line); border-radius:9px;
+    color:var(--paper); font-family:'IBM Plex Sans',sans-serif; font-size:14px; transition:border-color .15s;
+  }
+  .field input::placeholder{ color:var(--muted); opacity:0.7; }
+  .field input:focus{ outline:none; border-color:var(--brass); }
+  .field.error input{ border-color:var(--coral); }
+  .field .err-msg{ font-size:11px; color:var(--coral); margin-top:6px; display:none; }
+  .field.error .err-msg{ display:block; }
+
+  .pw-toggle{ position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); font-size:11px; cursor:pointer; font-family:'IBM Plex Mono',monospace; }
+  .pw-toggle:hover{ color:var(--paper); }
+
+  .row-between{ display:flex; justify-content:space-between; align-items:center; margin:2px 0 22px; }
+  .remember{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
+  .remember input{ accent-color:var(--brass); width:14px; height:14px; }
+  .forgot-link{ font-size:12px; color:var(--brass); cursor:pointer; font-weight:600; background:none; border:none; }
+  .forgot-link:hover{ text-decoration:underline; }
+
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:14px;
+    padding:13px 18px; border-radius:9px; border:none; cursor:pointer; width:100%;
+    transition:transform .12s, opacity .12s;
+  }
+  .btn:active{ transform:scale(0.98); }
+  .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .btn-brass{ background:var(--brass); color:var(--ink); }
+  .btn-brass:hover{ opacity:0.92; }
+  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--paper); margin-top:10px; }
+  .btn-ghost:hover{ background:rgba(236,230,214,0.06); }
+
+  .switch-line{ text-align:center; font-size:13px; color:var(--muted); margin-top:20px; }
+  .switch-line b{ color:var(--brass); cursor:pointer; font-weight:600; }
+
+  .banner{ font-size:12px; padding:10px 12px; border-radius:8px; margin-bottom:16px; display:none; }
+  .banner.show{ display:block; }
+  .banner.error{ background:rgba(193,68,60,0.14); color:var(--coral); border:1px solid rgba(193,68,60,0.3); }
+  .banner.success{ background:rgba(122,158,126,0.14); color:var(--sage); border:1px solid rgba(122,158,126,0.3); }
+
+  @media (max-width:760px){
+    .stage{ grid-template-columns:1fr; }
+    .brand-pane{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="brand-pane">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#C9A227" stroke-width="1.4"/>
+        <circle cx="20" cy="20" r="1.6" fill="#C9A227"/>
+        <path d="M20 6 L23 18 L20 20 L17 18 Z" fill="#C9A227"/>
+        <path d="M20 34 L17 22 L20 20 L23 22 Z" fill="#7A9E7E" opacity="0.7"/>
+      </svg>
+      <div class="name">Career<span>Compass</span></div>
+    </div>
+    <div class="brand-quote">
+      <div class="eyebrow">Your placement season, organized</div>
+      <h2>Every application. Every deadline. One place.</h2>
+    </div>
+    <div class="route-preview">
+      <div class="rp-line">
+        <div class="rp-item brass"><b>Track</b> — log internships, placements, hackathons</div>
+        <div class="rp-item"><b>Prioritize</b> — see what's due next</div>
+        <div class="rp-item"><b>Reflect</b> — status counts across your search</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-pane">
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="setTab('login')">Sign In</div>
+      <div class="tab" id="tab-register" onclick="setTab('register')">Register</div>
+    </div>
+
+    <div class="banner" id="banner"></div>
+
+    <div id="form-login">
+      <div class="form-head">
+        <div class="eyebrow">Welcome back</div>
+        <h1>Sign in to your account</h1>
+        <p>Pick up your opportunity tracker where you left off.</p>
+      </div>
+
+      <div class="field" id="login-email-field">
+        <label>Email</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+          <input type="email" id="login-email" placeholder="you@college.edu" oninput="clearError('login-email-field')">
+        </div>
+        <div class="err-msg">Enter a valid email address.</div>
+      </div>
+
+      <div class="field" id="login-pw-field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+          <input type="password" id="login-pw" placeholder="Enter your password" oninput="clearError('login-pw-field')">
+          <button type="button" class="pw-toggle" onclick="togglePw('login-pw', this)">SHOW</button>
+        </div>
+        <div class="err-msg">Password is required.</div>
+      </div>
+
+      <button class="btn btn-brass" id="login-btn" onclick="submitLogin()">Sign In</button>
+
+      <div class="switch-line">New to CareerCompass? <b onclick="setTab('register')">Create an account</b></div>
+    </div>
+
+    <div id="form-register" style="display:none;">
+      <div class="form-head">
+        <div class="eyebrow">Start tracking</div>
+        <h1>Create your account</h1>
+        <p>Set up your profile and start logging opportunities in minutes.</p>
+      </div>
+
+      <div class="field" id="reg-name-field">
+        <label>Full name</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <input type="text" id="reg-name" placeholder="Savarapu Lakshmi Srihitha" oninput="clearError('reg-name-field')">
+        </div>
+        <div class="err-msg">Full name is required.</div>
+      </div>
+
+      <div class="field" id="reg-email-field">
+        <label>Email</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+          <input type="email" id="reg-email" placeholder="you@college.edu" oninput="clearError('reg-email-field')">
+        </div>
+        <div class="err-msg">Enter a valid email address.</div>
+      </div>
+
+      <div class="field" id="reg-pw-field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+          <input type="password" id="reg-pw" placeholder="Create a password" oninput="clearError('reg-pw-field')">
+          <button type="button" class="pw-toggle" onclick="togglePw('reg-pw', this)">SHOW</button>
+        </div>
+        <div class="err-msg">Password is required.</div>
+      </div>
+
+      <button class="btn btn-brass" id="register-btn" onclick="submitRegister()">Create Account</button>
+
+      <div class="switch-line">Already have an account? <b onclick="setTab('login')">Sign in</b></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'http://localhost:8080/api';
+
+  function setTab(t){
+    document.getElementById('tab-login').classList.toggle('active', t==='login');
+    document.getElementById('tab-register').classList.toggle('active', t==='register');
+    document.getElementById('form-login').style.display = t==='login' ? 'block' : 'none';
+    document.getElementById('form-register').style.display = t==='register' ? 'block' : 'none';
+    hideBanner();
+  }
+
+  function togglePw(id, btn){
+    const input = document.getElementById(id);
+    const isPw = input.type === 'password';
+    input.type = isPw ? 'text' : 'password';
+    btn.textContent = isPw ? 'HIDE' : 'SHOW';
+  }
+
+  function clearError(fieldId){
+    document.getElementById(fieldId).classList.remove('error');
+  }
+
+  function isValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  function showBanner(msg, type){
+    const b = document.getElementById('banner');
+    b.textContent = msg;
+    b.className = 'banner show ' + type;
+  }
+  function hideBanner(){
+    document.getElementById('banner').className = 'banner';
+  }
+
+  async function submitLogin(){
+    const email = document.getElementById('login-email').value.trim();
+    const pw = document.getElementById('login-pw').value;
+    let ok = true;
+    if(!isValidEmail(email)){ document.getElementById('login-email-field').classList.add('error'); ok=false; }
+    if(!pw){ document.getElementById('login-pw-field').classList.add('error'); ok=false; }
+    if(!ok) return;
+
+    hideBanner();
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true; btn.textContent = 'Signing in...';
+
+    try{
+      const res = await fetch(`${API_BASE}/users/login`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ email, password: pw })
+      });
+
+      if(res.ok){
+        const data = await res.json();
+        localStorage.setItem('cc_token', data.token);
+        localStorage.setItem('cc_email', email);
+        localStorage.setItem('cc_fullname', data.fullName || email);
+        window.location.href = 'careercompass-dashboard.html';
+        return;
+      }
+
+      const errText = await res.text();
+      showBanner(errText || 'Invalid email or password.', 'error');
+    }catch(err){
+      showBanner('Could not reach the server. Is the backend running on ' + API_BASE + '?', 'error');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  }
+
+  async function submitRegister(){
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pw = document.getElementById('reg-pw').value;
+    let ok = true;
+    if(!name){ document.getElementById('reg-name-field').classList.add('error'); ok=false; }
+    if(!isValidEmail(email)){ document.getElementById('reg-email-field').classList.add('error'); ok=false; }
+    if(!pw){ document.getElementById('reg-pw-field').classList.add('error'); ok=false; }
+    if(!ok) return;
+
+    hideBanner();
+    const btn = document.getElementById('register-btn');
+    btn.disabled = true; btn.textContent = 'Creating account...';
+
+    try{
+      const res = await fetch(`${API_BASE}/users/register`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ fullName: name, email, password: pw })
+      });
+
+      if(res.ok){
+        showBanner('Account created. You can sign in now.', 'success');
+        setTimeout(() => setTab('login'), 900);
+        return;
+      }
+
+      const contentType = res.headers.get('content-type') || '';
+      if(contentType.includes('application/json')){
+        const errs = await res.json();
+        const msg = Object.values(errs).join(' ');
+        showBanner(msg || 'Please check the form and try again.', 'error');
+      } else {
+        const errText = await res.text();
+        showBanner(errText || 'Registration failed.', 'error');
+      }
+    }catch(err){
+      showBanner('Could not reach the server. Is the backend running on ' + API_BASE + '?', 'error');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  }
+
+  if(localStorage.getItem('cc_token')){
+    window.location.href = 'careercompass-dashboard.html';
+  }
+</script>
+</body>
+</html>
