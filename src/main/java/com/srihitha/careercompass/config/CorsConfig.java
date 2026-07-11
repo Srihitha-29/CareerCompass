@@ -16,11 +16,10 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // Add whichever origin you open the HTML files from.
-        // "null" covers double-clicking the file directly (file:// origin).
         config.setAllowedOriginPatterns(List.of(
                 "http://127.0.0.1:*",
                 "http://localhost:*",
+                "https://*.up.railway.app",
                 "null"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
