@@ -234,7 +234,7 @@
         <label>Full name</label>
         <div class="input-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-          <input type="text" id="reg-name" placeholder="Savarapu Lakshmi Srihitha" oninput="clearError('reg-name-field')">
+          <input type="text" id="reg-name" placeholder="Your Name" oninput="clearError('reg-name-field')">
         </div>
         <div class="err-msg">Full name is required.</div>
       </div>
@@ -243,7 +243,7 @@
         <label>Email</label>
         <div class="input-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
-          <input type="email" id="reg-email" placeholder="you@college.edu" oninput="clearError('reg-email-field')">
+          <input type="email" id="reg-email" placeholder="example@gmail.com" oninput="clearError('reg-email-field')">
         </div>
         <div class="err-msg">Enter a valid email address.</div>
       </div>
@@ -357,8 +357,11 @@
       });
 
       if(res.ok){
-        showBanner('Account created. You can sign in now.', 'success');
-        setTimeout(() => setTab('login'), 900);
+        const data = await res.json();
+        localStorage.setItem('cc_token', data.token);
+        localStorage.setItem('cc_email', email);
+        localStorage.setItem('cc_fullname', data.fullName || email);
+        window.location.href = 'careercompass-dashboard.html';
         return;
       }
 

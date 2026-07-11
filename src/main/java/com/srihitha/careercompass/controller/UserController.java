@@ -1,4 +1,5 @@
 package com.srihitha.careercompass.controller;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,20 +23,21 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     @PostMapping("/register")
-public String registerUser(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<LoginResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
+        LoginResponse response = userService.registerUser(request);
+        return ResponseEntity.ok(response);
+    }
 
-    userService.registerUser(request);
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = userService.loginUser(request);
+        return ResponseEntity.ok(response);
+    }
 
-    return "User Registered Successfully";
-}
-@PostMapping("/login")
-public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-    LoginResponse response = userService.loginUser(request);
-    return ResponseEntity.ok(response);
-}
-@GetMapping("/test")
-public ResponseEntity<String> test() {
-    return ResponseEntity.ok("JWT is Working!");
-}
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("JWT is Working!");
+    }
 }
