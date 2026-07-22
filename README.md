@@ -8,7 +8,7 @@
 
 A full-stack opportunity tracker built for placement season. CareerCompass helps students organize internships, hackathons, placements, certifications, deadlines, and resume versions in one secure application.
 
-🌐 **Live Demo:** https://careercompass-production-c71a.up.railway.app/index.html
+🌐 **Live Demo:** https://careercompass-production-project.up.railway.app/
 
 📂 **Repository:** https://github.com/Srihitha-29/CareerCompass
 
